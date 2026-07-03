@@ -6,11 +6,9 @@ public class Venta {
 
     private String[] historial;
     private int cantidadVentas;
-    private Inventario inventario;
     private int contadorVenta;
 
-    public Venta(Inventario inventario) {
-        this.inventario     = inventario;
+    public Venta() {
         this.historial      = new String[100]; // máximo de ventas a guardar
         this.cantidadVentas = 0;
         this.contadorVenta  = 1;
