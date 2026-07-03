@@ -1,7 +1,5 @@
 package com.mycompany.bookstockmanager;
 
-import javax.swing.JOptionPane;
-
 public class Libro {
 
     private String codigo;
@@ -69,18 +67,6 @@ public class Libro {
 
     public void setPrecio(double precio) {
         this.precio = precio;
-    }
-
-    public void mostrarDatos() {
-
-        JOptionPane.showMessageDialog(null,
-                "Código: " + codigo +
-                "\nTítulo: " + titulo +
-                "\nAutor: " + autor +
-                "\nCategoría: " + categoria +
-                "\nStock: " + stock +
-                "\nPrecio: ₡" + precio);
-
-    }
+    } 
 
 }
