@@ -1,16 +1,17 @@
 package com.mycompany.bookstockmanager;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 public class Inventario {
-    private ArrayList<Libro> listaLibro;
+    private Libro[] listaLibro;
+    private int cantidadLibros;
 
-    public Inventario(){
-        this.listaLibro = new ArrayList<>();
+    public Inventario() {
+        this.listaLibro = new Libro[100]; // tamaño fijo máximo
+        this.cantidadLibros = 0;
     }
     
     public boolean verificarStock(String titulo, int cantidad) {
-        for(Libro l : listaLibro){
+        for (int i = 0; i < cantidadLibros; i++) {
+            Libro l = listaLibro[i];
             if (l.getTitulo().equalsIgnoreCase(titulo)) {
                 return l.getStock() >= cantidad;
             }   
@@ -21,12 +22,13 @@ public class Inventario {
         return true;
     }
 
-    public void restarStock(String titulo, int cantidadARestar){
-        for(Libro l : listaLibro){
-            if (l.getTitulo().equalsIgnoreCase(titulo)){
-                int StockActual = l.getStock();
+    public void restarStock(String titulo, int cantidadARestar) {
+        for (int i = 0; i < cantidadLibros; i++) {
+            Libro l = listaLibro[i];
+            if (l.getTitulo().equalsIgnoreCase(titulo)) {
+                int stockActual = l.getStock();
                 l.setStock(stockActual - cantidadARestar);
-            break;
+                break;
             }
         }
     }
