@@ -4,8 +4,6 @@ import javax.swing.JOptionPane;
 
 public class MenuPrincipal {
 
-    Inventario inventario = new Inventario();
-
     public void MostrarMenu() {
 
         String opcion;
