@@ -7,16 +7,18 @@ public class Venta {
     private String[] historial;
     private int cantidadVentas;
     private int contadorVenta;
+    private Inventario inventario;
 
-    public Venta() {
-        this.historial      = new String[100]; // máximo de ventas a guardar
+    public Venta(Inventario inventario) {
+        this.historial = new String[100]; // máximo de ventas a guardar
         this.cantidadVentas = 0;
-        this.contadorVenta  = 1;
+        this.contadorVenta = 1;
+        this.inventario = inventario;
     }
 
     public void registrarVenta() {
         String cliente = pedirCliente();
-        if (cliente == null) {
+        if (cliente.isEmpty()) {
             return;
         }
 
@@ -28,9 +30,7 @@ public class Venta {
         cantidadRows = contarRows(rows);
 
         if (cantidadRows == 0) {
-            JOptionPane.showMessageDialog(null,
-                    "No se agregó ningún libro. Venta cancelada.",
-                    "Venta vacía", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No se agregó ningún libro. Venta cancelada.");
             return;
         }
 
@@ -38,50 +38,105 @@ public class Venta {
     }
 
     private String pedirCliente() {
-        // TODO: mostrar input con JOptionPane para nombre del cliente
-        // validar que no esté vacío, retornar null si cancela
-        return null;
+        String cliente = JOptionPane.showInputDialog(null, "Ingrese el nombre del cliente:");
+
+        // Si se selecciona calcelar cliente va a ser null
+        if (cliente == null) {
+            JOptionPane.showMessageDialog(null, "Venta cancelada.");
+            return "";
+        }
+
+        cliente = cliente.trim();
+        if (cliente.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El nombre del cliente no puede estar vacío.");
+            return "";
+        }
+
+        return cliente;
     }
 
-    private Libro pedirLibro() {
-        // TODO: mostrar input para código de libro
-        // buscar en inventario
-        // mostrar error si no existe, retornar null si cancela o no encuentra
-        return null;
+    private String pedirCodigoLibro() {
+        String codigo = JOptionPane.showInputDialog(null,
+                "Ingrese el código del libro (o cancele para terminar):");
+
+        if (codigo == null) {
+            return "";
+        }
+
+        return codigo.trim();
     }
 
     private int pedirCantidad(Libro libro) {
-        // TODO: mostrar input con stock disponible del libro
-        // parsear a entero, validar que sea mayor a 0
-        // retornar -1 si cancela o es inválido
-        return -1;
-    }
+        String input = JOptionPane.showInputDialog(null,
+                "Stock disponible: " + libro.getStock() + "\nIngrese la cantidad a vender:");
 
-    private boolean esDuplicado(String[] rows, int cantidadRows, Libro libro) {
-        // TODO: recorrer rows desde 0 hasta cantidadRows
-        // verificar si alguna posición contiene el código del libro
-        // retornar true si ya fue agregado
-        return false;
+        if (input == null) {
+            JOptionPane.showMessageDialog(null, "Operación cancelada. No se agregó el libro.");
+            return -1;
+        }
+
+        input = input.trim();
+
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
+            return -1;
+        }
+
+        boolean esNumero = true;
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isDigit(input.charAt(i))) {
+                esNumero = false;
+            }
+        }
+
+        if (!esNumero) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
+            return -1;
+        }
+
+        int cantidad = Integer.parseInt(input);
+        if (cantidad <= 0) {
+            JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a 0.");
+            return -1;
+        }
+
+        return cantidad;
     }
 
     private boolean validarStock(Libro libro, int cantidad) {
-        // TODO: verificar disponibilidad
-        // mostrar advertencia si no hay suficiente stock
-        // retornar false si no hay stock suficiente
-        return false;
+        if (libro.getStock() < cantidad) {
+            JOptionPane.showMessageDialog(null,
+                    "No hay suficiente stock disponible para \"" + libro.getTitulo() + "\".\n"
+                            + "Stock disponible: " + libro.getStock());
+            return false;
+        }
+        return true;
     }
 
     private double agregarLibros(String[] rows, int cantidadRows, double totalVenta) {
+        String[] codigosAgregados = new String[50]; // codigos de libros ya agregados a esta venta
+
         while (true) {
-            Libro libro = pedirLibro();
-            if (libro == null) {
+            String codigo = pedirCodigoLibro();
+            if (codigo.isEmpty()) {
                 break;
             }
 
-            if (esDuplicado(rows, cantidadRows, libro)) {
-                JOptionPane.showMessageDialog(null,
-                        "Ese libro ya fue agregado a esta venta.",
-                        "Duplicado", JOptionPane.WARNING_MESSAGE);
+            Libro libro = inventario.buscarPorCodigo(codigo);
+            if (libro == null) {
+                JOptionPane.showMessageDialog(null, "No se encontró ningún libro con ese código.");
+                continue;
+            }
+
+            boolean duplicado = false;
+            for (int i = 0; i < cantidadRows; i++) {
+                if (codigosAgregados[i].equals(libro.getCodigo())) {
+                    duplicado = true;
+                }
+            }
+
+            if (duplicado) {
+                JOptionPane.showMessageDialog(null, "Ese libro ya fue agregado a esta venta.");
                 continue;
             }
 
@@ -95,19 +150,18 @@ public class Venta {
             }
 
             if (cantidadRows >= rows.length) {
-                JOptionPane.showMessageDialog(null,
-                        "No se pueden agregar más libros a esta venta.",
-                        "Límite alcanzado", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No se pueden agregar más libros a esta venta.");
                 break;
             }
 
+            codigosAgregados[cantidadRows] = libro.getCodigo();
             totalVenta = procesarLinea(rows, cantidadRows, libro, cantidad, totalVenta);
             cantidadRows++;
 
             int continuar = JOptionPane.showConfirmDialog(null,
                     "¿Desea agregar otro libro a esta venta?",
                     "Continuar", JOptionPane.YES_NO_OPTION);
-            if (continuar != JOptionPane.YES_OPTION){
+            if (continuar != JOptionPane.YES_OPTION) {
                 break;
             }
         }
@@ -115,18 +169,24 @@ public class Venta {
     }
 
     private double procesarLinea(String[] rows, int cantidadRows, Libro libro,
-                                 int cantidad, double totalVenta) {
-        // TODO: calcular subtotal con precio * cantidad
-        // construir el String de la línea y guardarlo en rows[cantidadRows]
-        // mostrar confirmación con JOptionPane
-        // retornar totalVenta + subtotal
-        return totalVenta;
+            int cantidad, double totalVenta) {
+        double subtotal = libro.getPrecio() * cantidad;
+
+        rows[cantidadRows] = libro.getCodigo() + " | " + libro.getTitulo()
+                + " x" + cantidad + " = $" + subtotal;
+
+        inventario.restarStock(libro.getTitulo(), cantidad);
+
+        JOptionPane.showMessageDialog(null,
+                "Agregado: " + libro.getTitulo() + " x" + cantidad + " ($" + subtotal + ")");
+
+        return totalVenta + subtotal;
     }
 
     private int contarRows(String[] rows) {
         int contador = 0;
-        for (String r : rows) {
-            if (r != null) {
+        for (int i = 0; i < rows.length; i++) {
+            if (rows[i] != null) {
                 contador++;
             }
         }
@@ -134,15 +194,14 @@ public class Venta {
     }
 
     private void guardarVenta(String cliente, String[] rows, int cantidadRows, double total) {
-        String codigoVenta = String.format("VTA-%04d", contadorVenta++);
+        String codigoVenta = "VTA-" + contadorVenta;
+        contadorVenta++;
         String fecha = "02/07/2026 00:00"; // Hardcodear hasta poder usar LocalDateTime o Date
 
         String resumen = construirResumen(codigoVenta, cliente, rows, cantidadRows, total, fecha);
         agregarHistorial(resumen);
 
-        JOptionPane.showMessageDialog(null,
-                "Venta registrada exitosamente.\n\n" + resumen,
-                "Venta Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.\n\n" + resumen);
     }
 
     private void agregarHistorial(String resumen) {
@@ -150,19 +209,24 @@ public class Venta {
             historial[cantidadVentas] = resumen;
             cantidadVentas++;
         } else {
-            JOptionPane.showMessageDialog(null,
-                    "No se pueden guardar más ventas en el historial.",
-                    "Historial lleno", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No se pueden guardar más ventas en el historial.");
         }
     }
 
     private String construirResumen(String codigoVenta, String cliente,
-                                    String[] rows, int cantidadRows, double total, String fecha) {
-        // TODO: armar el resumen completo
-        // incluir codigoVenta, cliente, fecha
-        // recorrer rows desde 0 hasta cantidadRows y agregar cada línea
-        // incluir el total
-        return "";
+            String[] rows, int cantidadRows, double total, String fecha) {
+        String resumen = "Código de venta: " + codigoVenta + "\n"
+                + "Cliente: " + cliente + "\n"
+                + "Fecha: " + fecha + "\n"
+                + "Libros:\n";
+
+        for (int i = 0; i < cantidadRows; i++) {
+            resumen += "  - " + rows[i] + "\n";
+        }
+
+        resumen += "Total: $" + total;
+
+        return resumen;
     }
 
     public String[] getHistorial() {

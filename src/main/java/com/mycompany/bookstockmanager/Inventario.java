@@ -9,6 +9,15 @@ public class Inventario {
         this.cantidadLibros = 0;
     }
     
+    public Libro buscarPorCodigo(String codigo) {
+        for (int i = 0; i < cantidadLibros; i++) {
+            if (listaLibro[i].getCodigo().equalsIgnoreCase(codigo)) {
+                return listaLibro[i];
+            }
+        }
+        return null;
+    }
+
     public boolean verificarStock(String titulo, int cantidad) {
         for (int i = 0; i < cantidadLibros; i++) {
             Libro l = listaLibro[i];
