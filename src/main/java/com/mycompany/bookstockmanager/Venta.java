@@ -4,13 +4,13 @@ import javax.swing.JOptionPane;
 
 public class Venta {
 
-    private String[] historial;
+    private RegistroVenta[] historial;
     private int cantidadVentas;
     private int contadorVenta;
     private Inventario inventario;
 
     public Venta(Inventario inventario) {
-        this.historial = new String[100]; // máximo de ventas a guardar
+        this.historial = new RegistroVenta[100]; // máximo de ventas a guardar
         this.cantidadVentas = 0;
         this.contadorVenta = 1;
         this.inventario = inventario;
@@ -198,38 +198,22 @@ public class Venta {
         contadorVenta++;
         String fecha = "02/07/2026 00:00"; // Hardcodear hasta poder usar LocalDateTime o Date
 
-        String resumen = construirResumen(codigoVenta, cliente, rows, cantidadRows, total, fecha);
-        agregarHistorial(resumen);
+        RegistroVenta registro = new RegistroVenta(codigoVenta, cliente, fecha, rows, cantidadRows, total);
+        agregarHistorial(registro);
 
-        JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.\n\n" + resumen);
+        JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.\n\n" + registro.getResumen());
     }
 
-    private void agregarHistorial(String resumen) {
+    private void agregarHistorial(RegistroVenta registro) {
         if (cantidadVentas < historial.length) {
-            historial[cantidadVentas] = resumen;
+            historial[cantidadVentas] = registro;
             cantidadVentas++;
         } else {
             JOptionPane.showMessageDialog(null, "No se pueden guardar más ventas en el historial.");
         }
     }
 
-    private String construirResumen(String codigoVenta, String cliente,
-            String[] rows, int cantidadRows, double total, String fecha) {
-        String resumen = "Código de venta: " + codigoVenta + "\n"
-                + "Cliente: " + cliente + "\n"
-                + "Fecha: " + fecha + "\n"
-                + "Libros:\n";
-
-        for (int i = 0; i < cantidadRows; i++) {
-            resumen += "  - " + rows[i] + "\n";
-        }
-
-        resumen += "Total: $" + total;
-
-        return resumen;
-    }
-
-    public String[] getHistorial() {
+    public RegistroVenta[] getHistorial() {
         return historial;
     }
 
