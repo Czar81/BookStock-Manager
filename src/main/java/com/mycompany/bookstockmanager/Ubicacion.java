@@ -68,7 +68,6 @@ public class Ubicacion {
 
     public void mostrarMapaEstantes() {
         String mapa = "=== MAPA DE ESTANTES ===\n\n";
-
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 if (estantes[i][j] == null) {
@@ -80,7 +79,6 @@ public class Ubicacion {
             }
             mapa += "\n";
         }
-
         JOptionPane.showMessageDialog(null, mapa);
     }
 
