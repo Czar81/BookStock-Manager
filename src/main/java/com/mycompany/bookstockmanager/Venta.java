@@ -69,7 +69,7 @@ public class Venta {
 
         input = input.trim();
 
-        if (input.isEmpty()) {
+        if (input == null) {
             JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
             return -1;
         }
