@@ -18,16 +18,15 @@ public class Venta {
 
     public void registrarVenta() {
         String cliente = pedirCliente();
-        if (cliente.isEmpty()) {
+        if (cliente == null) {
             return;
         }
 
         String[] rows = new String[50]; // arreglo fijo de líneas de venta
-        int cantidadRows = 0;
         double totalVenta = 0;
 
-        totalVenta = agregarLibros(rows, cantidadRows, totalVenta);
-        cantidadRows = contarRows(rows);
+        totalVenta = agregarLibros(rows, totalVenta);
+        int cantidadRows = contarRows(rows);
 
         if (cantidadRows == 0) {
             JOptionPane.showMessageDialog(null, "No se agregó ningún libro. Venta cancelada.");
@@ -40,18 +39,11 @@ public class Venta {
     private String pedirCliente() {
         String cliente = JOptionPane.showInputDialog(null, "Ingrese el nombre del cliente:");
 
-        // Si se selecciona calcelar cliente va a ser null
+        // Si se selecciona cancelar cliente va a ser null
         if (cliente == null) {
             JOptionPane.showMessageDialog(null, "Venta cancelada.");
-            return "";
+            return null;
         }
-
-        cliente = cliente.trim();
-        if (cliente.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El nombre del cliente no puede estar vacío.");
-            return "";
-        }
-
         return cliente;
     }
 
@@ -60,7 +52,7 @@ public class Venta {
                 "Ingrese el código del libro (o cancele para terminar):");
 
         if (codigo == null) {
-            return "";
+            return null;
         }
 
         return codigo.trim();
@@ -78,18 +70,6 @@ public class Venta {
         input = input.trim();
 
         if (input.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
-            return -1;
-        }
-
-        boolean esNumero = true;
-        for (int i = 0; i < input.length(); i++) {
-            if (!Character.isDigit(input.charAt(i))) {
-                esNumero = false;
-            }
-        }
-
-        if (!esNumero) {
             JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
             return -1;
         }
@@ -113,56 +93,54 @@ public class Venta {
         return true;
     }
 
-    private double agregarLibros(String[] rows, int cantidadRows, double totalVenta) {
+    private double agregarLibros(String[] rows, double totalVenta) {
         String[] codigosAgregados = new String[50]; // codigos de libros ya agregados a esta venta
+        int cantidadRows = 0;
+        boolean terminar = false;
 
-        while (true) {
+        while (!terminar) {
             String codigo = pedirCodigoLibro();
-            if (codigo.isEmpty()) {
-                break;
-            }
 
-            Libro libro = inventario.buscarPorCodigo(codigo);
-            if (libro == null) {
-                JOptionPane.showMessageDialog(null, "No se encontró ningún libro con ese código.");
-                continue;
-            }
+            if (codigo == null) {
+                terminar = true;
+            } else {
+                Libro libro = inventario.buscarPorCodigo(codigo);
 
-            boolean duplicado = false;
-            for (int i = 0; i < cantidadRows; i++) {
-                if (codigosAgregados[i].equals(libro.getCodigo())) {
-                    duplicado = true;
+                if (libro == null) {
+                    JOptionPane.showMessageDialog(null, "No se encontró ningún libro con ese código.");
+                } else {
+                    boolean duplicado = false;
+                    for (int i = 0; i < cantidadRows; i++) {
+                        if (codigosAgregados[i].equals(libro.getCodigo())) {
+                            duplicado = true;
+                        }
+                    }
+
+                    if (duplicado) {
+                        JOptionPane.showMessageDialog(null, "Ese libro ya fue agregado a esta venta.");
+                    } else {
+                        int cantidad = pedirCantidad(libro);
+
+                        if (cantidad == -1) {
+                            // Cantidad inválida o cancelada, no se agrega nada.
+                        } else if (!validarStock(libro, cantidad)) {
+                            // Stock insuficiente, el mensaje ya se mostró en validarStock().
+                        } else if (cantidadRows >= rows.length) {
+                            JOptionPane.showMessageDialog(null, "No se pueden agregar más libros a esta venta.");
+                            terminar = true;
+                        } else {
+                            codigosAgregados[cantidadRows] = libro.getCodigo();
+                            totalVenta = procesarLinea(rows, cantidadRows, libro, cantidad, totalVenta);
+                            cantidadRows++;
+
+                            String continuar = JOptionPane.showInputDialog(null,
+                                    "¿Desea agregar otro libro a esta venta? (Si/No)");
+                            if (continuar == null || continuar.equalsIgnoreCase("No")) {
+                                terminar = true;
+                            }
+                        }
+                    }
                 }
-            }
-
-            if (duplicado) {
-                JOptionPane.showMessageDialog(null, "Ese libro ya fue agregado a esta venta.");
-                continue;
-            }
-
-            int cantidad = pedirCantidad(libro);
-            if (cantidad == -1) {
-                continue;
-            }
-
-            if (!validarStock(libro, cantidad)) {
-                continue;
-            }
-
-            if (cantidadRows >= rows.length) {
-                JOptionPane.showMessageDialog(null, "No se pueden agregar más libros a esta venta.");
-                break;
-            }
-
-            codigosAgregados[cantidadRows] = libro.getCodigo();
-            totalVenta = procesarLinea(rows, cantidadRows, libro, cantidad, totalVenta);
-            cantidadRows++;
-
-            int continuar = JOptionPane.showConfirmDialog(null,
-                    "¿Desea agregar otro libro a esta venta?",
-                    "Continuar", JOptionPane.YES_NO_OPTION);
-            if (continuar != JOptionPane.YES_OPTION) {
-                break;
             }
         }
         return totalVenta;
