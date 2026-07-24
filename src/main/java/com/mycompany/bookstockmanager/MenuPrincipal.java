@@ -64,9 +64,8 @@ public class MenuPrincipal {
                             "GESTIÓN DE LIBROS\n\n"
                             + "1. Registrar libro\n"
                             + "2. Consultar libro\n"
-                            + "3. Volver al menú principal"
-                    )
-            );
+                            + "3. Editar libro\n"
+                            + "4. Volver al menú principal"));
 
             switch (opcion) {
 
@@ -79,6 +78,10 @@ public class MenuPrincipal {
                     break;
 
                 case 3:
+                    editarLibro();
+                    break;
+
+                case 4:
                     break;
                     
                 default:
@@ -86,7 +89,7 @@ public class MenuPrincipal {
                             "Opción inválida.");
             }
 
-        } while (opcion != 3);
+        } while (opcion != 4);
     }
     
     private void registrarLibro() {
@@ -157,6 +160,53 @@ public class MenuPrincipal {
         }
 
     }
+    
+    private void editarLibro() {
+
+    String codigo = JOptionPane.showInputDialog(
+            "Digite el código del libro que desea editar:");
+
+    Libro libro = inventario.buscarPorCodigo(codigo);
+
+    if (libro != null) {
+
+        String nuevoTitulo = JOptionPane.showInputDialog(
+                "Digite el nuevo título:",
+                libro.getTitulo());
+
+        String nuevoAutor = JOptionPane.showInputDialog(
+                "Digite el nuevo autor:",
+                libro.getAutor());
+
+        String nuevaCategoria = JOptionPane.showInputDialog(
+                "Digite la nueva categoría:",
+                libro.getCategoria());
+
+        int nuevaCantidad = Integer.parseInt(
+                JOptionPane.showInputDialog(
+                        "Digite la nueva cantidad:",
+                        libro.getStock()));
+
+        double nuevoPrecio = Double.parseDouble(
+                JOptionPane.showInputDialog(
+                        "Digite el nuevo precio:",
+                        libro.getPrecio()));
+
+        libro.setTitulo(nuevoTitulo);
+        libro.setAutor(nuevoAutor);
+        libro.setCategoria(nuevaCategoria);
+        libro.setStock(nuevaCantidad);
+        libro.setPrecio(nuevoPrecio);
+
+        JOptionPane.showMessageDialog(null,
+                "Libro actualizado correctamente.");
+
+    } else {
+
+        JOptionPane.showMessageDialog(null,
+                "No existe un libro con ese código.");
+    }
+}
 
     private void menuVentas() {
         // TODO: Implementar submenú de ventas
