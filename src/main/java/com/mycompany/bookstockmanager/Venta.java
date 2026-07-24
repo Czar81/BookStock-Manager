@@ -153,7 +153,7 @@ public class Venta {
         rows[cantidadRows] = libro.getCodigo() + " | " + libro.getTitulo()
                 + " x" + cantidad + " = $" + subtotal;
 
-        inventario.restarStock(libro.getTitulo(), cantidad);
+        inventario.restarStock(libro.getCodigo(), cantidad);
 
         JOptionPane.showMessageDialog(null,
                 "Agregado: " + libro.getTitulo() + " x" + cantidad + " ($" + subtotal + ")");
