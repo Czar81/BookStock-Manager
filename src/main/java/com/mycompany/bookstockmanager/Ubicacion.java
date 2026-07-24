@@ -67,22 +67,21 @@ public class Ubicacion {
     }
 
     public void mostrarMapaEstantes() {
-        StringBuilder mapa = new StringBuilder();
-        mapa.append("=== MAPA DE ESTANTES ===\n\n");
+        String mapa = "=== MAPA DE ESTANTES ===\n\n";
 
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 if (estantes[i][j] == null) {
-                    mapa.append("[ Libre ]");
+                    mapa += "[ Libre ]";
                 } else {
-                    mapa.append("[" + estantes[i][j] + "]");
+                    mapa += "[" + estantes[i][j] + "]";
                 }
-                mapa.append("  ");
+                mapa += "  ";
             }
-            mapa.append("\n");
+            mapa += "\n";
         }
 
-        JOptionPane.showMessageDialog(null, mapa.toString());
+        JOptionPane.showMessageDialog(null, mapa);
     }
 
     public int contarEspaciosLibres() {
