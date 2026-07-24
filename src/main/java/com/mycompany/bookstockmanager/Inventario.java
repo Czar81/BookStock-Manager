@@ -1,5 +1,7 @@
 package com.mycompany.bookstockmanager;
 
+import javax.swing.JOptionPane;
+
 public class Inventario {
 
     private Libro[] listaLibros;
@@ -12,37 +14,38 @@ public class Inventario {
 
     public boolean agregarLibro(Libro libro) {
         if (buscarPorCodigo(libro.getCodigo()) != null) {
-            System.out.println("Ya existe un libro con el código '" + libro.getCodigo() + "'.");
+            JOptionPane.showMessageDialog(null, "Ya existe un libro con el código '" + libro.getCodigo() + "'.");
             return false;
         }
 
         if (contadorLibros < listaLibros.length) {
             listaLibros[contadorLibros] = libro;
             contadorLibros++;
-            System.out.println("Libro '" + libro.getTitulo() + "' registrado exitosamente.");
+            JOptionPane.showMessageDialog(null, "Libro '" + libro.getTitulo() + "' registrado exitosamente.");
             return true;
         }
 
-        System.out.println("No se puede agregar más libros. Inventario lleno.");
+        JOptionPane.showMessageDialog(null, "No se puede agregar más libros. Inventario lleno.");
         return false;
     }
 
     public void mostrarLibros() {
         if (contadorLibros == 0) {
-            System.out.println("El inventario está vacío.");
+            JOptionPane.showMessageDialog(null,"El inventario está vacío.");
             return;
         }
 
-        System.out.println("\n--- LISTA DE LIBROS EN INVENTARIO ---");
+        String resumenLibros = "--- LISTA DE LIBROS EN INVENTARIO ---\n";
         for (int i = 0; i < contadorLibros; i++) {
             Libro libro = listaLibros[i];
-            System.out.println("Código: " + libro.getCodigo() + 
+            resumenLibros+="Código: " + libro.getCodigo() + 
                                " | Título: " + libro.getTitulo() + 
                                " | Autor: " + libro.getAutor() + 
                                " | Categoría: " + libro.getCategoria() + 
                                " | Stock: " + libro.getStock() + 
-                               " | Precio: ₡" + libro.getPrecio());
+                               " | Precio: ₡" + libro.getPrecio() + "\n";
         }
+        JOptionPane.showMessageDialog(null, resumenLibros);
     }
 
     public Libro buscarPorCodigo(String codigo) {
