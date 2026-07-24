@@ -3,6 +3,8 @@ package com.mycompany.bookstockmanager;
 import javax.swing.JOptionPane;
 
 public class MenuPrincipal {
+    
+    private Inventario inventario = new Inventario();
 
     public void MostrarMenu() {
 
@@ -53,8 +55,107 @@ public class MenuPrincipal {
     }
 
     private void menuLibros() {
-        // TODO: Implementar submenú de libros
-        JOptionPane.showMessageDialog(null, "Mostrando menú de gestión de libros...");
+
+        int opcion;
+
+        do {
+            opcion = Integer.parseInt(
+                    JOptionPane.showInputDialog(
+                            "GESTIÓN DE LIBROS\n\n"
+                            + "1. Registrar libro\n"
+                            + "2. Consultar libro\n"
+                            + "3. Volver al menú principal"
+                    )
+            );
+
+            switch (opcion) {
+
+                case 1:
+                    registrarLibro();
+                    break;
+
+                case 2:
+                    consultarLibro();
+                    break;
+
+                case 3:
+                    break;
+                    
+                default:
+                    JOptionPane.showMessageDialog(null,
+                            "Opción inválida.");
+            }
+
+        } while (opcion != 3);
+    }
+    
+    private void registrarLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro:");
+
+        String titulo = JOptionPane.showInputDialog(
+                "Digite el título del libro:");
+
+        String autor = JOptionPane.showInputDialog(
+                "Digite el autor del libro:");
+
+        String categoria = JOptionPane.showInputDialog(
+                "Digite la categoría del libro:");
+
+        int cantidad = Integer.parseInt(
+                JOptionPane.showInputDialog(
+                        "Digite la cantidad del libro:"));
+
+        double precio = Double.parseDouble(
+                JOptionPane.showInputDialog(
+                        "Digite el precio del libro:"));
+
+        Libro nuevoLibro = new Libro(
+                codigo,
+                titulo,
+                autor,
+                categoria,
+                cantidad,
+                precio
+        );
+
+        boolean agregado = inventario.agregarLibro(nuevoLibro);
+
+        if (agregado == true) {
+            JOptionPane.showMessageDialog(null,
+                    "Libro registrado correctamente.");
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "No se pudo registrar el libro.\n"
+                    + "El código ya existe o el inventario está lleno.");
+        }
+    }
+    
+    private void consultarLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro:");
+
+        Libro libro = inventario.buscarPorCodigo(codigo);
+
+        if (libro != null) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Código: " + libro.getCodigo()
+                    + "\nTítulo: " + libro.getTitulo()
+                    + "\nAutor: " + libro.getAutor()
+                    + "\nCategoría: " + libro.getCategoria()
+                    + "\nCantidad: " + libro.getStock()
+                    + "\nPrecio: ₡" + libro.getPrecio());
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "No existe un libro con ese código.");
+
+        }
+
     }
 
     private void menuVentas() {

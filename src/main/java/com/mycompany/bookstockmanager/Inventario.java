@@ -41,4 +41,20 @@ public class Inventario {
             }
         }
     }
+    
+    public boolean agregarLibro(Libro libro) {
+
+    if (buscarPorCodigo(libro.getCodigo()) != null) {
+        return false;
+    }
+
+    if (cantidadLibros < listaLibro.length) {
+        listaLibro[cantidadLibros] = libro;
+        cantidadLibros++;
+        return true;
+    }
+
+    return false;
+}
+    
 }
