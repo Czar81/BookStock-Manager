@@ -8,77 +8,54 @@ public class Ubicacion {
     private int filas;
     private int columnas;
 
-    public Ubicacion(int filas, int columnas) {
-        this.filas = filas;
-        this.columnas = columnas;
+    public Ubicacion() {
+        filas = Integer.parseInt(JOptionPane.showInputDialog(null, "¿Cuántas filas de estantes tiene la bodega?"));
+        columnas = Integer.parseInt(JOptionPane.showInputDialog(null, "¿Cuántas columnas de estantes tiene la bodega?"));
         estantes = new String[filas][columnas];
 
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                estantes[i][j] = null;
+                estantes[i][j] = "Libre";
             }
         }
+
+        JOptionPane.showMessageDialog(null, "Bodega inicializada con " + filas + " filas y " + columnas + " columnas.");
     }
 
     public boolean estaLibre(int fila, int columna) {
         if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) {
             return false;
         }
-        return estantes[fila][columna] == null;
+        return estantes[fila][columna].equals("Libre");
     }
 
-    public boolean asignarLibro(int fila, int columna, String codigoLibro) {
+    public void asignarEspacio(int fila, int columna, String codigoLibro) {
         if (!estaLibre(fila, columna)) {
-            JOptionPane.showMessageDialog(null, "Esa posición ya está ocupada o no existe.");
-            return false;
+            JOptionPane.showMessageDialog(null, "Esa posición ya está ocupada.");
+        } else {
+            estantes[fila][columna] = codigoLibro;
+            JOptionPane.showMessageDialog(null, "Libro asignado en fila " + fila + ", columna " + columna + ".");
         }
-        estantes[fila][columna] = codigoLibro;
-        return true;
     }
 
-    public boolean liberarPosicion(int fila, int columna) {
+    public void liberarEspacio(int fila, int columna) {
         if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) {
-            return false;
+            JOptionPane.showMessageDialog(null, "Posición no válida.");
+        } else {
+            estantes[fila][columna] = "Libre";
+            JOptionPane.showMessageDialog(null, "Posición liberada correctamente.");
         }
-        estantes[fila][columna] = null;
-        return true;
-    }
-
-    public boolean moverLibro(int filaOrigen, int colOrigen, int filaDestino, int colDestino) {
-        if (estaLibre(filaOrigen, colOrigen)) {
-            JOptionPane.showMessageDialog(null, "No hay ningún libro en esa posición de origen.");
-            return false;
-        }
-        if (!estaLibre(filaDestino, colDestino)) {
-            JOptionPane.showMessageDialog(null, "La posición destino ya está ocupada.");
-            return false;
-        }
-        String codigo = estantes[filaOrigen][colOrigen];
-        estantes[filaOrigen][colOrigen] = null;
-        estantes[filaDestino][colDestino] = codigo;
-        return true;
-    }
-
-    public String obtenerCodigoEn(int fila, int columna) {
-        if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) {
-            return null;
-        }
-        return estantes[fila][columna];
     }
 
     public void mostrarMapaEstantes() {
         String mapa = "=== MAPA DE ESTANTES ===\n\n";
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                if (estantes[i][j] == null) {
-                    mapa += "[ Libre ]";
-                } else {
-                    mapa += "[" + estantes[i][j] + "]";
-                }
-                mapa += "  ";
+                mapa += "[ " + estantes[i][j] + " ]  ";
             }
             mapa += "\n";
         }
+        mapa += "\nLibres: " + contarEspaciosLibres() + " | Ocupados: " + contarEspaciosOcupados();
         JOptionPane.showMessageDialog(null, mapa);
     }
 
@@ -86,7 +63,7 @@ public class Ubicacion {
         int libres = 0;
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                if (estantes[i][j] == null) {
+                if (estantes[i][j].equals("Libre")) {
                     libres++;
                 }
             }
