@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 public class MenuPrincipal {
     
     private Inventario inventario = new Inventario();
+    private Venta venta = new Venta(inventario);
 
     public void MostrarMenu() {
 
@@ -209,8 +210,54 @@ public class MenuPrincipal {
 }
 
     private void menuVentas() {
-        // TODO: Implementar submenú de ventas
-        JOptionPane.showMessageDialog(null, "Mostrando menú de gestión de ventas...");
+
+        int opcion;
+
+        do {
+            opcion = Integer.parseInt(
+                    JOptionPane.showInputDialog(
+                            "GESTIÓN DE VENTAS\n\n"
+                            + "1. Registrar venta\n"
+                            + "2. Consultar historial de ventas\n"
+                            + "3. Volver al menú principal"));
+
+            switch (opcion) {
+
+                case 1:
+                    venta.registrarVenta();
+                    break;
+
+                case 2:
+                    consultarVentas();
+                    break;
+
+                case 3:
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null,
+                            "Opción inválida.");
+            }
+
+        } while (opcion != 3);
+    }
+
+    private void consultarVentas() {
+
+        RegistroVenta[] historial = venta.getHistorial();
+        int cantidadVentas = venta.getCantidadVentas();
+
+        if (cantidadVentas == 0) {
+            JOptionPane.showMessageDialog(null, "No hay ventas registradas.");
+            return;
+        }
+
+        String resumen = "";
+        for (int i = 0; i < cantidadVentas; i++) {
+            resumen += historial[i].getResumen() + "\n\n";
+        }
+
+        JOptionPane.showMessageDialog(null, resumen);
     }
 
     private void menuReportes() {
