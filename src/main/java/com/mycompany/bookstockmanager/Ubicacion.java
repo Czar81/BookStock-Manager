@@ -1,4 +1,3 @@
-```java
 package com.mycompany.bookstockmanager;
 
 import javax.swing.JOptionPane;
@@ -144,4 +143,4 @@ public class Ubicacion {
         return columnas;
     }
 }
-```
+
