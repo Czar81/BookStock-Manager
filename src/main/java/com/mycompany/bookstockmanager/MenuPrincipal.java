@@ -69,7 +69,8 @@ public class MenuPrincipal {
                         + "3. Editar libro\n"
                         + "4. Mostrar todos los libros\n"
                         + "5. Reubicar libro\n"
-                        + "6. Volver al menú principal"
+                        + "6. Eliminar libro\n"
+                        + "7. Volver al menú principal"
                 )
         );
 
@@ -96,6 +97,10 @@ public class MenuPrincipal {
                 break;
 
             case 6:
+                eliminarLibro();
+                break;
+
+            case 7:
                 break;
 
             default:
@@ -103,7 +108,45 @@ public class MenuPrincipal {
                         "Opción inválida.");
         }
 
-    } while (opcion != 6);
+    } while (opcion != 7);
+}
+
+    private void eliminarLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro que desea eliminar:");
+
+        Libro libro = inventario.buscarPorCodigo(codigo);
+
+        if (libro != null) {
+
+            String confirmacion = JOptionPane.showInputDialog(
+                    "¿Está seguro de que desea eliminar el libro \""
+                    + libro.getTitulo() + "\"? (Si/No)");
+
+            if (confirmacion != null && confirmacion.equalsIgnoreCase("Si")) {
+
+                boolean eliminado = inventario.eliminarLibro(codigo);
+
+                if (eliminado == true) {
+
+                    ubicacion.liberarEspacio(codigo);
+
+                    JOptionPane.showMessageDialog(null,
+                            "Libro eliminado correctamente.");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(null,
+                            "No se pudo eliminar el libro.");
+                }
+            }
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "No existe un libro con ese código.");
+        }
 }
     
     private void registrarLibro() {
