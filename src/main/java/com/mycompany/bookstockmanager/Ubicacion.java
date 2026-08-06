@@ -79,6 +79,18 @@ public class Ubicacion {
         return true;
     }
 
+    public boolean liberarEspacio(String codigoLibro) {
+        for (int e = 0; e < cantidadEstantes; e++) {
+            for (int p = 0; p < filas * columnas; p++) {
+                if (estantes[e][p].equals(codigoLibro)) {
+                    estantes[e][p] = "Libre";
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void mostrarMapaEstantes() {
         String mapa = "=== MAPA DE ESTANTES ===\n\n";
         for (int e = 0; e < cantidadEstantes; e++) {
