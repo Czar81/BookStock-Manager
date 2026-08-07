@@ -52,8 +52,37 @@ public class MenuPrincipal {
     // SUBMENUS
 
     private void menuEstantes() {
-        // TODO: Implementar submenú de estantes
-        JOptionPane.showMessageDialog(null, "Mostrando menú de gestión de estantes...");
+
+        int opcion;
+
+        do {
+            opcion = Integer.parseInt(
+                    JOptionPane.showInputDialog(
+                            "GESTIÓN DE ESTANTES\n\n"
+                            + "1. Ver mapa de estantes\n"
+                            + "2. Ver espacios libres y ocupados\n"
+                            + "3. Volver al menú principal"));
+
+            switch (opcion) {
+
+                case 1:
+                    ubicacion.mostrarMapaEstantes();
+                    break;
+
+                case 2:
+                    JOptionPane.showMessageDialog(null,
+                            "Espacios libres: " + ubicacion.contarEspaciosLibres()
+                            + "\nEspacios ocupados: " + ubicacion.contarEspaciosOcupados());
+                    break;
+
+                case 3:
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+
+        } while (opcion != 3);
     }
 
     private void menuLibros() {
