@@ -61,7 +61,8 @@ public class MenuPrincipal {
                             "GESTIÓN DE ESTANTES\n\n"
                             + "1. Ver mapa de estantes\n"
                             + "2. Ver espacios libres y ocupados\n"
-                            + "3. Volver al menú principal"));
+                            + "3. Consultar ubicación de un libro\n"
+                            + "4. Volver al menú principal"));
 
             switch (opcion) {
 
@@ -76,13 +77,36 @@ public class MenuPrincipal {
                     break;
 
                 case 3:
+                    consultarUbicacionLibro();
+                    break;
+
+                case 4:
                     break;
 
                 default:
                     JOptionPane.showMessageDialog(null, "Opción inválida.");
             }
 
-        } while (opcion != 3);
+        } while (opcion != 4);
+    }
+
+    private void consultarUbicacionLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro:");
+
+        String ubicacionLibro = ubicacion.buscarUbicacion(codigo);
+
+        if (ubicacionLibro != null) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Ubicación: " + ubicacionLibro);
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "No se encontró ese libro en ningún estante.");
+        }
     }
 
     private void menuLibros() {
@@ -176,7 +200,7 @@ public class MenuPrincipal {
             JOptionPane.showMessageDialog(null,
                     "No existe un libro con ese código.");
         }
-}
+    }
     
     private void registrarLibro() {
 
