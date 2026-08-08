@@ -4,12 +4,12 @@ import javax.swing.JOptionPane;
 
 public class Reporte {
 
-    // 1. Reporte de Inventario Completo
+    // Reporte de Inventario Completo
     public void reporteInventarioCompleto(Inventario inventario) {
         inventario.mostrarLibros();
     }
 
-    // 2. Reporte de Bajo Stock
+    // Reporte de Bajo Stock
     public void reporteBajoStock(Inventario inventario, int limite) {
         String resultado = "=== LIBROS CON BAJO STOCK (<= " + limite + ") ===\n";
         boolean hayBajoStock = false;
@@ -29,7 +29,7 @@ public class Reporte {
         }
     }
 
-    // 3. Reporte de Ocupación de Estantes
+    // Reporte de Ocupación de Estantes
     public void reporteOcupacionEstantes(Ubicacion ubicacion) {
         int libres = ubicacion.contarEspaciosLibres();
         int ocupados = ubicacion.contarEspaciosOcupados();
@@ -42,7 +42,7 @@ public class Reporte {
         ubicacion.mostrarMapaEstantes();
     }
 
-    // 4. Reporte de Ventas
+    // Reporte de Ventas
     public void reporteVentas(Venta venta) {
         if (venta.getCantidadVentas() == 0) {
             JOptionPane.showMessageDialog(null, "No se han registrado ventas todavía.");
@@ -63,19 +63,24 @@ public class Reporte {
         JOptionPane.showMessageDialog(null, resultado);
     }
 
-    // 5. Búsqueda por título o autor
-    public void buscarPorTituloOAutor(Inventario inventario, String texto) {
+    // Busqueda por titulo, autor o ubicacion
+    public void buscarPorTituloOAutorOUbicacion(Inventario inventario, Ubicacion ubicacion, String texto) {
         String resultado = "=== RESULTADOS DE BÚSQUEDA ('" + texto + "') ===\n";
         boolean encontrado = false;
 
         for (int i = 0; i < inventario.getContadorLibros(); i++) {
             Libro l = inventario.getListaLibros()[i];
             if (l != null) {
+                String ubicacionLibro = ubicacion.buscarUbicacion(l.getCodigo());
+
                 boolean coincideTitulo = l.getTitulo().toLowerCase().contains(texto.toLowerCase());
                 boolean coincideAutor = l.getAutor().toLowerCase().contains(texto.toLowerCase());
+                boolean coincideUbicacion = ubicacionLibro != null
+                        && ubicacionLibro.toLowerCase().contains(texto.toLowerCase());
 
-                if (coincideTitulo || coincideAutor) {
-                    resultado += "• [" + l.getCodigo() + "] " + l.getTitulo() + " - " + l.getAutor() + " (Stock: " + l.getStock() + ")\n";
+                if (coincideTitulo || coincideAutor || coincideUbicacion) {
+                    resultado += "• [" + l.getCodigo() + "] " + l.getTitulo() + " - " + l.getAutor()
+                            + " (Stock: " + l.getStock() + " | Ubicación: " + ubicacionLibro + ")\n";
                     encontrado = true;
                 }
             }

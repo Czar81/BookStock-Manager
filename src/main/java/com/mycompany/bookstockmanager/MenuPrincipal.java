@@ -51,26 +51,83 @@ public class MenuPrincipal {
 
     // SUBMENUS
     private void menuEstantes() {
-        // TODO: Implementar submenú de estantes
-        JOptionPane.showMessageDialog(null, "Mostrando menú de gestión de estantes...");
-    }
-
-    private void menuLibros() {
 
         int opcion;
 
         do {
             opcion = Integer.parseInt(
                     JOptionPane.showInputDialog(
-                            "GESTIÓN DE LIBROS\n\n"
-                            + "1. Registrar libro\n"
-                            + "2. Consultar libro\n"
-                            + "3. Editar libro\n"
-                            + "4. Mostrar todos los libros\n"
-                            + "5. Reubicar libro\n"
-                            + "6. Volver al menú principal"
-                    )
-            );
+                            "GESTIÓN DE ESTANTES\n\n"
+                            + "1. Ver mapa de estantes\n"
+                            + "2. Ver espacios libres y ocupados\n"
+                            + "3. Consultar ubicación de un libro\n"
+                            + "4. Volver al menú principal"));
+
+            switch (opcion) {
+
+                case 1:
+                    ubicacion.mostrarMapaEstantes();
+                    break;
+
+                case 2:
+                    JOptionPane.showMessageDialog(null,
+                            "Espacios libres: " + ubicacion.contarEspaciosLibres()
+                            + "\nEspacios ocupados: " + ubicacion.contarEspaciosOcupados());
+                    break;
+
+                case 3:
+                    consultarUbicacionLibro();
+                    break;
+
+                case 4:
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+
+        } while (opcion != 4);
+    }
+
+    private void consultarUbicacionLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro:");
+
+        String ubicacionLibro = ubicacion.buscarUbicacion(codigo);
+
+        if (ubicacionLibro != null) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Ubicación: " + ubicacionLibro);
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "No se encontró ese libro en ningún estante.");
+        }
+    }
+
+    private void menuLibros() {
+
+        int opcion;
+
+
+
+    do {
+        opcion = Integer.parseInt(
+                JOptionPane.showInputDialog(
+                        "GESTIÓN DE LIBROS\n\n"
+                        + "1. Registrar libro\n"
+                        + "2. Consultar libro\n"
+                        + "3. Editar libro\n"
+                        + "4. Mostrar todos los libros\n"
+                        + "5. Reubicar libro\n"
+                        + "6. Eliminar libro\n"
+                        + "7. Volver al menú principal"
+                )
+        );
+
 
             switch (opcion) {
 
@@ -95,6 +152,10 @@ public class MenuPrincipal {
                     break;
 
                 case 6:
+                     eliminarLibro();
+                    break;
+
+                case 7:
                     break;
 
                 default:
@@ -102,8 +163,47 @@ public class MenuPrincipal {
                             "Opción inválida.");
             }
 
-        } while (opcion != 6);
+    } while (opcion != 7);
+}
+
+    private void eliminarLibro() {
+
+        String codigo = JOptionPane.showInputDialog(
+                "Digite el código del libro que desea eliminar:");
+
+        Libro libro = inventario.buscarPorCodigo(codigo);
+
+        if (libro != null) {
+
+            String confirmacion = JOptionPane.showInputDialog(
+                    "¿Está seguro de que desea eliminar el libro \""
+                    + libro.getTitulo() + "\"? (Si/No)");
+
+            if (confirmacion != null && confirmacion.equalsIgnoreCase("Si")) {
+
+                boolean eliminado = inventario.eliminarLibro(codigo);
+
+                if (eliminado == true) {
+
+                    ubicacion.liberarEspacio(codigo);
+
+                    JOptionPane.showMessageDialog(null,
+                            "Libro eliminado correctamente.");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(null,
+                            "No se pudo eliminar el libro.");
+                }
+            }
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "No existe un libro con ese código.");
+        }
     }
+    
 
     private void registrarLibro() {
 
