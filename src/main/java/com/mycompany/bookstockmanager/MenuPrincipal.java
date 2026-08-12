@@ -471,9 +471,80 @@ public class MenuPrincipal {
         JOptionPane.showMessageDialog(null, resumen);
     }
 
-    private void menuReportes() {
-        // TODO: Implementar submenú de reportes
-        JOptionPane.showMessageDialog(null, "Mostrando menú de reportes y consultas...");
+   private void menuReportes() {
+    // Instanciamos la clase Reporte
+    Reporte reporte = new Reporte();
+
+    // Opciones del submenú
+    String[] opciones = {
+        "Inventario Completo",
+        "Reporte de Bajo Stock",
+        "Ocupación de Estantes",
+        "Historial de Ventas",
+        "Búsqueda General (Título / Autor / Ubicación)",
+        "Volver al Menú Principal"
+    };
+
+    // Desplegamos la lista de opciones
+    String seleccion = (String) JOptionPane.showInputDialog(
+        null,
+        "Seleccione el reporte que desea consultar:",
+        "Menú de Reportes - BookStock Manager",
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        opciones,
+        opciones[0]
+    );
+
+    // Si el usuario cancela o selecciona volver
+    if (seleccion == null || seleccion.equals("Volver al Menú Principal")) {
+        return;
     }
 
+    // Llamada a los métodos exactos de tu clase Reporte pasándole tus objetos principales
+    switch (seleccion) {
+        case "Inventario Completo":
+            reporte.reporteInventarioCompleto(inventario);
+            break;
+
+        case "Reporte de Bajo Stock":
+            try {
+                String inputLimite = JOptionPane.showInputDialog(
+                    null, 
+                    "Ingrese el límite de stock para el reporte:", 
+                    "5"
+                );
+                if (inputLimite != null && !inputLimite.trim().isEmpty()) {
+                    int limite = Integer.parseInt(inputLimite.trim());
+                    reporte.reporteBajoStock(inventario, limite);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(
+                    null, 
+                    "Debe ingresar un número entero válido.", 
+                    "Error de Entrada", 
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+            break;
+
+        case "Ocupación de Estantes":
+            reporte.reporteOcupacionEstantes(ubicacion);
+            break;
+
+        case "Historial de Ventas":
+            reporte.reporteVentas(venta);
+            break;
+
+        case "Búsqueda General (Título / Autor / Ubicación)":
+            String textoBusqueda = JOptionPane.showInputDialog(
+                null, 
+                "Ingrese el texto a buscar (Título, Autor o Ubicación):"
+            );
+            if (textoBusqueda != null && !textoBusqueda.trim().isEmpty()) {
+                reporte.buscarPorTituloOAutorOUbicacion(inventario, ubicacion, textoBusqueda.trim());
+            }
+            break;
+    }
+}
 }
