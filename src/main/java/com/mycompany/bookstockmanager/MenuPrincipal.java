@@ -7,6 +7,7 @@ public class MenuPrincipal {
     private Inventario inventario = new Inventario();
     private Venta venta = new Venta(inventario);
     private Ubicacion ubicacion = new Ubicacion();
+    private Reporte reporte = new Reporte();
 
     public void MostrarMenu() {
 
@@ -471,80 +472,69 @@ public class MenuPrincipal {
         JOptionPane.showMessageDialog(null, resumen);
     }
 
-   private void menuReportes() {
-    // Instanciamos la clase Reporte
-    Reporte reporte = new Reporte();
+    private void menuReportes() {
 
-    // Opciones del submenú
-    String[] opciones = {
-        "Inventario Completo",
-        "Reporte de Bajo Stock",
-        "Ocupación de Estantes",
-        "Historial de Ventas",
-        "Búsqueda General (Título / Autor / Ubicación)",
-        "Volver al Menú Principal"
-    };
+        int opcion;
 
-    // Desplegamos la lista de opciones
-    String seleccion = (String) JOptionPane.showInputDialog(
-        null,
-        "Seleccione el reporte que desea consultar:",
-        "Menú de Reportes - BookStock Manager",
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        opciones,
-        opciones[0]
-    );
+        do {
+            opcion = Integer.parseInt(
+                    JOptionPane.showInputDialog(
+                            "REPORTES Y CONSULTAS\n\n"
+                            + "1. Reporte de inventario completo\n"
+                            + "2. Reporte de bajo stock\n"
+                            + "3. Reporte de ocupación de estantes\n"
+                            + "4. Reporte de ventas\n"
+                            + "5. Buscar por título, autor o ubicación\n"
+                            + "6. Volver al menú principal"));
 
-    // Si el usuario cancela o selecciona volver
-    if (seleccion == null || seleccion.equals("Volver al Menú Principal")) {
-        return;
+            switch (opcion) {
+
+                case 1:
+                    reporte.reporteInventarioCompleto(inventario);
+                    break;
+
+                case 2:
+                    reporteBajoStockMenu();
+                    break;
+
+                case 3:
+                    reporte.reporteOcupacionEstantes(ubicacion);
+                    break;
+
+                case 4:
+                    reporte.reporteVentas(venta);
+                    break;
+
+                case 5:
+                    buscarLibroMenu();
+                    break;
+
+                case 6:
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null,
+                            "Opción inválida.");
+            }
+
+        } while (opcion != 6);
     }
 
-    // Llamada a los métodos exactos de tu clase Reporte pasándole tus objetos principales
-    switch (seleccion) {
-        case "Inventario Completo":
-            reporte.reporteInventarioCompleto(inventario);
-            break;
+    private void reporteBajoStockMenu() {
 
-        case "Reporte de Bajo Stock":
-            try {
-                String inputLimite = JOptionPane.showInputDialog(
-                    null, 
-                    "Ingrese el límite de stock para el reporte:", 
-                    "5"
-                );
-                if (inputLimite != null && !inputLimite.trim().isEmpty()) {
-                    int limite = Integer.parseInt(inputLimite.trim());
-                    reporte.reporteBajoStock(inventario, limite);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(
-                    null, 
-                    "Debe ingresar un número entero válido.", 
-                    "Error de Entrada", 
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-            break;
+        int limite = Integer.parseInt(
+                JOptionPane.showInputDialog(
+                        "Digite el límite de stock:"));
 
-        case "Ocupación de Estantes":
-            reporte.reporteOcupacionEstantes(ubicacion);
-            break;
-
-        case "Historial de Ventas":
-            reporte.reporteVentas(venta);
-            break;
-
-        case "Búsqueda General (Título / Autor / Ubicación)":
-            String textoBusqueda = JOptionPane.showInputDialog(
-                null, 
-                "Ingrese el texto a buscar (Título, Autor o Ubicación):"
-            );
-            if (textoBusqueda != null && !textoBusqueda.trim().isEmpty()) {
-                reporte.buscarPorTituloOAutorOUbicacion(inventario, ubicacion, textoBusqueda.trim());
-            }
-            break;
+        reporte.reporteBajoStock(inventario, limite);
     }
-}
+
+    private void buscarLibroMenu() {
+
+        String texto = JOptionPane.showInputDialog(
+                "Digite el título, autor o ubicación a buscar:");
+
+        reporte.buscarPorTituloOAutorOUbicacion(inventario, ubicacion, texto);
+    }
+
 }
