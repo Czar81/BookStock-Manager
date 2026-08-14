@@ -1,5 +1,6 @@
-package com.mycompany.bookstockmanager;
+package com.mycompany.bookstockmanager.inventario;
 
+import com.mycompany.bookstockmanager.libro.Libro;
 import javax.swing.JOptionPane;
 
 public class Inventario {

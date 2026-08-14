@@ -1,4 +1,4 @@
-package com.mycompany.bookstockmanager;
+package com.mycompany.bookstockmanager.registroventa;
 
 public class RegistroVenta {
 

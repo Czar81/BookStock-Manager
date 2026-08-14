@@ -1,5 +1,10 @@
-package com.mycompany.bookstockmanager;
+package com.mycompany.bookstockmanager.reporte;
 
+import com.mycompany.bookstockmanager.inventario.Inventario;
+import com.mycompany.bookstockmanager.libro.Libro;
+import com.mycompany.bookstockmanager.registroventa.RegistroVenta;
+import com.mycompany.bookstockmanager.ubicacion.Ubicacion;
+import com.mycompany.bookstockmanager.venta.Venta;
 import javax.swing.JOptionPane;
 
 public class Reporte {

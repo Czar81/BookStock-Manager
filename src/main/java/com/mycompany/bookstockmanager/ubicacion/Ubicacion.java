@@ -1,4 +1,4 @@
-package com.mycompany.bookstockmanager;
+package com.mycompany.bookstockmanager.ubicacion;
 
 import javax.swing.JOptionPane;
 
