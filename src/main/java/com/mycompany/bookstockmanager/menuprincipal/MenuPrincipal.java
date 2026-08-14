@@ -282,18 +282,7 @@ public class MenuPrincipal {
                     precio
             );
 
-            boolean agregado = inventario.agregarLibro(nuevoLibro);
-
-            if (agregado == true) {
-
-                JOptionPane.showMessageDialog(null,
-                        "Libro registrado correctamente.");
-
-            } else {
-
-                JOptionPane.showMessageDialog(null,
-                        "No se pudo registrar el libro.");
-            }
+            inventario.agregarLibro(nuevoLibro);
         }
     }
 
@@ -408,17 +397,11 @@ public class MenuPrincipal {
             nuevaFila = nuevaFila - 1;
             nuevaColumna = nuevaColumna - 1;
 
-            boolean reubicado = ubicacion.reubicarLibro(
+            ubicacion.reubicarLibro(
                     codigo,
                     nuevoEstante,
                     nuevaFila,
                     nuevaColumna);
-
-            if (reubicado == true) {
-
-                JOptionPane.showMessageDialog(null,
-                        "El libro fue reubicado correctamente.");
-            }
 
         } else {
 
